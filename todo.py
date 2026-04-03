@@ -10,14 +10,16 @@ class TodoList:
         self.cursor.execute("INSERT INTO todos (task) VALUES (?)", (todo,))
         self.conn.commit()
 
-    def mark_todo_as_done(self, task_id: int) -> None:
+    def mark_todo_as_done(self, task_id: int) -> bool:
         self.cursor.execute("SELECT id FROM todos WHERE id = ?", (task_id,))
         row = self.cursor.fetchone()
         if row is None:
-            print("Task not found")
-        else:
-            self.cursor.execute("DELETE FROM todos WHERE id = ?", (task_id,))
-            self.conn.commit()
+            return False
+        
+        self.cursor.execute("DELETE FROM todos WHERE id = ?", (task_id,))
+        self.conn.commit()
+        return True
+            
 
     def show_todos(self) -> list:
         self.cursor.execute("SELECT * FROM todos")
