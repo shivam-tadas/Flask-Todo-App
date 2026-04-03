@@ -2,7 +2,7 @@ import sqlite3
 
 class TodoList:
     def __init__(self):
-        self.conn = sqlite3.connect("todos.db")
+        self.conn = sqlite3.connect("todos.db", check_same_thread=False)
         self.cursor = self.conn.cursor()
         self.cursor.execute("CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY, task TEXT)")
         
@@ -19,9 +19,7 @@ class TodoList:
             self.cursor.execute("DELETE FROM todos WHERE id = ?", (task_id,))
             self.conn.commit()
 
-    def show_todos(self) -> None:
-        print("To-do list")
+    def show_todos(self) -> list:
         self.cursor.execute("SELECT * FROM todos")
         rows = self.cursor.fetchall()
-        for id, task in rows:
-            print(f"{id}: {task}")
+        return rows
